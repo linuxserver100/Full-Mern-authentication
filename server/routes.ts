@@ -1,6 +1,12 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+// Import the PostgreSQL storage as fallback
+import { storage as pgStorage } from "./storage";
+// Import the MongoDB storage as primary
+import { mongoDBStorage } from "./mongodb-storage";
+
+// Use MongoDB storage if available, otherwise fallback to PostgreSQL
+const storage = process.env.USE_MONGODB === "true" ? mongoDBStorage : pgStorage;
 import { 
   registerUserSchema, 
   loginSchema, 

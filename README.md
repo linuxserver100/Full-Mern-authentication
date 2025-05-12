@@ -33,7 +33,7 @@ A comprehensive MERN stack authentication system with multiple login options, em
 ### Prerequisites
 
 - Node.js (v14+)
-- MongoDB Database
+- MongoDB Database or PostgreSQL Database (configurable)
 - SMTP email provider account (SMTP2GO recommended)
 
 ### Installation
