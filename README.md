@@ -368,6 +368,9 @@ import VerifyEmail from './pages/verify-email';
 import Profile from './pages/profile';
 import Dashboard from './pages/dashboard';
 import NotFound from './pages/not-found';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
+import Cookies from './pages/cookies';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function Router() {
@@ -381,6 +384,11 @@ function Router() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        
+        {/* Legal pages */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookies" element={<Cookies />} />
         
         {/* Protected routes */}
         <Route 
@@ -422,6 +430,9 @@ import VerifyEmail from './pages/verify-email';
 import Profile from './pages/profile';
 import Dashboard from './pages/dashboard';
 import NotFound from './pages/not-found';
+import Terms from './pages/terms';
+import Privacy from './pages/privacy';
+import Cookies from './pages/cookies';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function Router() {
@@ -435,6 +446,11 @@ function Router() {
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
         <Route path="/verify-email" component={VerifyEmail} />
+        
+        {/* Legal pages */}
+        <Route path="/terms" component={Terms} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/cookies" component={Cookies} />
         
         {/* Protected routes */}
         <Route path="/dashboard">
@@ -522,7 +538,145 @@ function Navbar() {
 }
 ```
 
-#### 10. Update Environmental Variables
+#### 10. Add Footer with Legal Pages
+
+Create a Footer component with links to legal pages:
+
+```tsx
+// src/components/layout/Footer.tsx
+import { Link } from "wouter"; // or react-router-dom
+
+export function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-gray-900 text-gray-300 py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Company section */}
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <span className="text-xl font-semibold text-white">Your App</span>
+            </div>
+            <p className="mb-4">Authentication system with multiple login options</p>
+          </div>
+          
+          {/* Quick Links section */}
+          <div>
+            <h3 className="text-white font-medium mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/">
+                  <span className="hover:text-white transition-colors cursor-pointer">Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/login">
+                  <span className="hover:text-white transition-colors cursor-pointer">Login</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/register">
+                  <span className="hover:text-white transition-colors cursor-pointer">Register</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Legal section */}
+          <div>
+            <h3 className="text-white font-medium mb-4">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/terms">
+                  <span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy">
+                  <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/cookies">
+                  <span className="hover:text-white transition-colors cursor-pointer">Cookie Policy</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Contact section */}
+          <div>
+            <h3 className="text-white font-medium mb-4">Contact Us</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="mailto:support@yourapp.com" className="hover:text-white transition-colors">
+                  support@yourapp.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* Copyright section */}
+        <div className="mt-12 pt-8 border-t border-gray-700 text-sm text-gray-400">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p>© {currentYear} Your App. All rights reserved.</p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <Link href="/privacy">
+                <span className="hover:text-white transition-colors cursor-pointer">Privacy</span>
+              </Link>
+              <Link href="/terms">
+                <span className="hover:text-white transition-colors cursor-pointer">Terms</span>
+              </Link>
+              <Link href="/cookies">
+                <span className="hover:text-white transition-colors cursor-pointer">Cookies</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+```
+
+Create basic pages for Terms, Privacy Policy, and Cookie Policy:
+
+```tsx
+// src/pages/terms.tsx
+import { Navbar } from "../components/layout/Navbar";
+import { Footer } from "../components/layout/Footer";
+
+export default function Terms() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <div className="container mx-auto px-4 py-12 max-w-4xl">
+          <h1 className="text-3xl font-bold mb-8">Terms of Service</h1>
+          
+          <div className="prose max-w-none">
+            <p>Last updated: {new Date().toLocaleDateString()}</p>
+            
+            <h2>1. Introduction</h2>
+            <p>
+              Welcome to Your App. These Terms of Service govern your use of our website and services.
+            </p>
+            
+            {/* Add more content as needed */}
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
+Create similar pages for privacy.tsx and cookies.tsx, then add them to your router as shown earlier.
+
+#### 11. Update Environmental Variables
 
 Create or update your `.env` file with the necessary authentication variables:
 

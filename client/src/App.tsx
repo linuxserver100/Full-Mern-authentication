@@ -19,6 +19,9 @@ import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
+import Terms from "@/pages/terms";
+import Privacy from "@/pages/privacy";
+import Cookies from "@/pages/cookies";
 
 function Router() {
   return (
@@ -32,6 +35,11 @@ function Router() {
       <Route path="/verify-email" component={VerifyEmail} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      
+      {/* Legal Pages */}
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/cookies" component={Cookies} />
       
       {/* Protected Routes */}
       <Route path="/dashboard" component={Dashboard} />
