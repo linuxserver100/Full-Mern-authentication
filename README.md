@@ -62,9 +62,28 @@ cp .env.example .env
 Important environment variables to configure:
 
 - `JWT_SECRET`: Your JWT secret key
-- `DATABASE_URL`: MongoDB connection string
+- `USE_MONGODB`: Set to "true" to use MongoDB or "false" to use PostgreSQL
+- `MONGODB_URI`: MongoDB connection string (if using MongoDB)
+- `DATABASE_URL`: PostgreSQL connection string (if using PostgreSQL)
 - `SMTP_*`: SMTP server settings
 - OAuth provider credentials (for social logins)
+
+### MongoDB Configuration
+
+The system supports MongoDB as the primary database. To use MongoDB:
+
+1. Make sure you have MongoDB installed locally or have access to a MongoDB Atlas cluster
+2. Set the `USE_MONGODB` environment variable to "true" in your `.env` file
+3. Set the `MONGODB_URI` environment variable to your MongoDB connection string:
+   - For MongoDB Atlas: `mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority`
+   - For local MongoDB: `mongodb://localhost:27017/auth_system`
+
+Example .env configuration for MongoDB:
+
+```
+USE_MONGODB=true
+MONGODB_URI=mongodb://localhost:27017/auth_system
+```
 
 4. **Start the development server**
 
