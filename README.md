@@ -1,32 +1,160 @@
 # MERN Authentication System
 
-A comprehensive MERN stack authentication system with multiple login options, email verification, and two-factor authentication (2FA) support.
+A comprehensive MERN stack authentication system with multiple login options, email verification, and two-factor authentication (2FA) support. This system provides a complete authentication solution that can be used as a standalone application or integrated into existing projects.
+
+## Project Overview
+
+This authentication system is built using the MERN stack (MongoDB, Express, React, Node.js) with support for PostgreSQL as a fallback database option. It provides a complete, production-ready authentication solution with multiple login methods, security features, and user management capabilities.
+
+### Key Features at a Glance
+- Dual database support (MongoDB primary, PostgreSQL fallback)
+- Multiple authentication methods (Email/Password, Social logins)
+- Two-factor authentication with TOTP
+- Email verification and notifications
+- Session management across devices
+- JWT-based secure authentication
+- Comprehensive user profile management
+- Responsive, modern UI with Tailwind CSS and Shadcn UI
+- Fully customizable and extendable architecture
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [MongoDB Configuration](#mongodb-configuration)
+  - [PostgreSQL Configuration](#postgresql-configuration)
+  - [Email Configuration](#email-configuration)
+- [Project Structure](#project-structure)
+- [API Documentation](#api-documentation)
+- [Frontend Components](#frontend-components)
+- [Database Integration](#database-integration)
+- [Security Features](#security-features)
+- [Customizing Schema & Data Storage](#customizing-schema--data-storage)
+- [Integrating into Existing Projects](#integrating-into-existing-projects)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
-- **Multiple Authentication Methods**
-  - Email/Password Login
-  - Social Logins (Google, GitHub, Microsoft, LinkedIn, Facebook, Apple)
-  - Two-Factor Authentication (2FA)
+### Authentication Methods
+- **Email/Password Authentication**
+  - Secure registration and login with email verification
+  - Strong password requirements with secure hashing
+  - Remember me functionality for extended sessions
 
-- **User Management**
-  - User Registration with Email Verification
-  - Password Reset/Recovery
-  - Profile Management
-  - Session Management
+- **Social Authentication**
+  - Google OAuth 2.0 integration
+  - GitHub OAuth integration
+  - Microsoft OAuth integration
+  - LinkedIn OAuth integration
+  - Facebook OAuth integration
+  - Apple Sign In integration
 
-- **Security Features**
-  - JWT-based Authentication
-  - Password Hashing
-  - Token Expiration and Refresh
-  - Login Attempt Tracking
-  - IP Geolocation for Login Monitoring
+- **Two-Factor Authentication (2FA)**
+  - Time-based One-Time Password (TOTP) implementation
+  - QR code generation for easy setup with authenticator apps
+  - Backup recovery codes for emergency access
+  - Option to enable/disable 2FA per user
 
+### User Management
+- **User Registration**
+  - Email verification with secure tokens
+  - Username and email validation
+  - Customizable profile fields
+
+- **Account Recovery**
+  - Secure password reset workflow
+  - Time-limited reset tokens
+  - Email notifications for recovery actions
+
+- **Profile Management**
+  - User profile editing
+  - Email address change with verification
+  - Password change with current password confirmation
+  - Profile picture upload and management
+  - Account deletion with confirmation
+
+- **Session Management**
+  - View all active sessions across devices
+  - Terminate individual sessions
+  - Logout from all devices
+  - Session expiration and automatic renewal
+
+### Security Features
+- **Token-Based Authentication**
+  - JWT (JSON Web Token) implementation
+  - Token expiration and refresh mechanism
+  - Secure token storage and transmission
+
+- **Password Security**
+  - Bcrypt hashing with salt rounds
+  - Password strength requirements
+  - Brute force protection
+  - Password history to prevent reuse
+
+- **Session Security**
+  - CSRF protection with tokens
+  - XSS protection
+  - Secure HTTP-only cookies
+  - IP tracking and validation
+
+- **Login Monitoring**
+  - Failed login attempt tracking
+  - Automatic temporary account locking after multiple failures
+  - IP geolocation tracking for suspicious activity
+  - Email notifications for unusual login locations
+
+### Notification System
 - **Email Notifications**
-  - Registration Confirmation
-  - Login Notifications
-  - Password Reset Requests
-  - Email Change Confirmations
+  - Welcome emails
+  - Email verification
+  - Password reset requests
+  - Successful/unsuccessful login attempts
+  - Account changes (email, password)
+  - New device logins
+  - Account security alerts
+
+### Legal Compliance
+- **Terms & Policies**
+  - Terms of Service page
+  - Privacy Policy page
+  - Cookie Policy page
+  - User consent tracking
+  - GDPR compliance helpers
+
+## Tech Stack
+
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL Database (primary)
+- **PostgreSQL** - SQL Database (alternative)
+- **Drizzle ORM** - Database ORM for PostgreSQL
+- **Mongoose** - MongoDB ODM
+- **jsonwebtoken** - JWT implementation
+- **bcrypt** - Password hashing
+- **speakeasy** - TOTP for 2FA
+- **nodemailer** - Email sending
+- **passport.js** - Authentication middleware
+
+### Frontend
+- **React** - UI library
+- **Shadcn UI** - Component library
+- **TailwindCSS** - Utility-first CSS framework
+- **React Hook Form** - Form validation
+- **Zod** - Schema validation
+- **React Query** - Data fetching and caching
+- **Wouter** - Routing
+- **Lucide React** - Icon library
+- **React Icons** - Social media icons
+
+### Tooling
+- **TypeScript** - Type safety
+- **Vite** - Build tool and development server
 
 ## Getting Started
 
@@ -85,10 +213,378 @@ USE_MONGODB=true
 MONGODB_URI=mongodb://localhost:27017/auth_system
 ```
 
+### PostgreSQL Configuration
+
+The system also supports PostgreSQL as an alternative database:
+
+1. Make sure you have PostgreSQL installed locally or have access to a cloud PostgreSQL instance
+2. Set the `USE_MONGODB` environment variable to "false" in your `.env` file
+3. Set the `DATABASE_URL` environment variable to your PostgreSQL connection string:
+   - Format: `postgresql://username:password@hostname:port/database?sslmode=require`
+
+Example .env configuration for PostgreSQL:
+
+```
+USE_MONGODB=false
+DATABASE_URL=postgresql://postgres:password@localhost:5432/auth_system
+```
+
+### Email Configuration
+
+Email notifications are an essential part of the authentication system. Configure your SMTP settings:
+
+1. Sign up for an SMTP provider (SMTP2GO, SendGrid, etc.)
+2. Update the .env file with your SMTP credentials:
+
+```
+SMTP_HOST=mail.smtp2go.com
+SMTP_PORT=2525
+SMTP_SECURE=false
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+EMAIL_FROM_NAME=Your App Name
+EMAIL_FROM_ADDRESS=no-reply@yourdomain.com
+```
+
 4. **Start the development server**
 
 ```bash
 npm run dev
+```
+
+The server will start at http://localhost:5000 with both the API and client served from the same port.
+
+## Project Structure
+
+The project follows a clear and organized structure:
+
+```
+├── client/                 # Frontend React application
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   │   ├── auth/       # Authentication-specific components
+│   │   │   ├── layout/     # Layout components (header, footer, etc.)
+│   │   │   └── ui/         # UI components (buttons, cards, etc.)
+│   │   ├── contexts/       # React contexts
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility functions and services
+│   │   ├── pages/          # Application pages
+│   │   └── App.tsx         # Root component
+│   └── index.html          # HTML entry point
+├── server/                 # Backend Express application
+│   ├── db/                 # Database connection and models
+│   ├── middleware/         # Express middleware
+│   ├── services/           # Business logic services
+│   ├── routes.ts           # API routes definition
+│   ├── storage.ts          # Storage interface
+│   └── index.ts            # Server entry point
+├── shared/                 # Shared code between client and server
+│   ├── schema.ts           # Database schema definitions
+│   └── types.ts            # Shared TypeScript types
+└── .env                    # Environment variables
+```
+
+## API Documentation
+
+The authentication system provides a comprehensive set of API endpoints:
+
+### Backend API Endpoints
+
+#### Authentication Endpoints
+
+| Endpoint | Method | Description | Request Body | Response | Implementation Notes |
+|----------|--------|-------------|--------------|----------|---------------------|
+| `/api/auth/register` | POST | Register a new user | `{ email, username, password, firstName?, lastName? }` | `{ message, user }` | Creates user, sends verification email, handles username uniqueness |
+| `/api/auth/login` | POST | Login user | `{ email, password, rememberMe }` | `{ token, user }` or `{ requiresTwoFactor, tempToken }` | Includes brute force protection, session tracking, IP logging |
+| `/api/auth/verify-email` | GET | Verify email address | `?token=<verification_token>` | `{ success, message }` | Validates time-limited token, updates user verification status |
+| `/api/auth/forgot-password` | POST | Request password reset | `{ email }` | `{ message }` | Generates reset token, sends email with secure reset link |
+| `/api/auth/reset-password` | POST | Reset password | `{ token, password }` | `{ message }` | Validates token, enforces password strength, updates password |
+| `/api/auth/logout` | POST | Logout current session | - | `{ message }` | Invalidates current session token |
+| `/api/auth/logout-all` | POST | Logout all sessions | - | `{ message }` | Invalidates all user sessions across devices |
+| `/api/auth/refresh-token` | POST | Refresh JWT token | `{ refreshToken }` | `{ token, refreshToken }` | Issues new access token using refresh token |
+
+#### Two-Factor Authentication Endpoints
+
+| Endpoint | Method | Description | Request Body | Response | Implementation Details |
+|----------|--------|-------------|--------------|----------|------------------------|
+| `/api/auth/2fa/setup` | POST | Setup 2FA | - | `{ secret, qrCodeUrl }` | Generates TOTP secret, creates QR code for authenticator apps |
+| `/api/auth/2fa/verify` | POST | Verify and enable 2FA | `{ code }` | `{ success, message, recoveryCodes }` | Verifies TOTP code, enables 2FA, provides backup codes |
+| `/api/auth/2fa/disable` | POST | Disable 2FA | `{ code, password }` | `{ success, message }` | Requires both TOTP code and password for security |
+| `/api/auth/2fa/validate` | POST | Validate 2FA during login | `{ code, tempToken }` | `{ token, user }` | Validates TOTP code during 2FA login flow |
+| `/api/auth/2fa/recovery` | POST | Use recovery code | `{ recoveryCode, tempToken }` | `{ token, user }` | Alternative to TOTP when authenticator unavailable |
+
+#### User Profile and Management Endpoints
+
+| Endpoint | Method | Description | Request Body | Response | Features |
+|----------|--------|-------------|--------------|----------|----------|
+| `/api/user/profile` | GET | Get user profile | - | User profile object | Returns user data with sensitive fields removed |
+| `/api/user/profile` | PATCH | Update user profile | Profile fields to update | `{ success, message, user }` | Updates allowed user fields with validation |
+| `/api/user/email` | POST | Change email address | `{ newEmail, password }` | `{ message }` | Requires verification for new email address |
+| `/api/user/password` | POST | Change password | `{ currentPassword, newPassword }` | `{ message }` | Enforces password history, strength requirements |
+| `/api/user/sessions` | GET | Get active sessions | - | Array of active sessions | Includes device info, IP, location data |
+| `/api/user/sessions/:id` | DELETE | Terminate specific session | - | `{ success, message }` | Allows terminating individual sessions by ID |
+| `/api/user/account` | DELETE | Delete user account | `{ password }` | `{ success, message }` | Permanently deletes user data with password confirmation |
+
+#### Social Authentication Endpoints
+
+| Endpoint | Method | Description | Implementation Details |
+|----------|--------|-------------|------------------------|
+| `/api/auth/google` | GET | Initiate Google OAuth flow | Uses OAuth 2.0 with configured scopes, state parameter for CSRF protection |
+| `/api/auth/github` | GET | Initiate GitHub OAuth flow | Requests user profile, email scopes |
+| `/api/auth/microsoft` | GET | Initiate Microsoft OAuth flow | Requests user.read scope |
+| `/api/auth/linkedin` | GET | Initiate LinkedIn OAuth flow | Requests r_liteprofile, r_emailaddress scopes |
+| `/api/auth/facebook` | GET | Initiate Facebook OAuth flow | Requests public_profile, email scopes |
+| `/api/auth/apple` | GET | Initiate Apple Sign In flow | Implements PKCE flow for enhanced security |
+| `/api/auth/<provider>/callback` | GET | OAuth callback for each provider | Handles authorization code, creates/links account, issues JWT |
+| `/api/auth/social/link` | POST | Link social account | `{ provider, code }` | Links social account to existing user |
+| `/api/auth/social/unlink` | POST | Unlink social account | `{ provider }` | Removes social account link from user |
+
+### Frontend Routes and Components
+
+#### Main Application Routes
+
+| Route | Component | Description | Protected | Features |
+|-------|-----------|-------------|-----------|----------|
+| `/` | `Home` | Landing page | No | Feature showcase, login/register CTAs |
+| `/login` | `Login` | User login | No | Email/password form, social login buttons, 2FA support |
+| `/register` | `Register` | User registration | No | Registration form with validation, terms acceptance |
+| `/forgot-password` | `ForgotPassword` | Password reset request | No | Email form for reset link |
+| `/reset-password` | `ResetPassword` | Reset password form | No | New password form, token validation |
+| `/verify-email` | `VerifyEmail` | Email verification | No | Verifies email token, shows status |
+| `/dashboard` | `Dashboard` | User dashboard | Yes | Overview of user account, recent activity |
+| `/profile` | `Profile` | User profile management | Yes | Edit profile details, avatar upload |
+| `/settings` | `Settings` | Account settings | Yes | Password change, email change, 2FA setup |
+| `/settings/security` | `SecuritySettings` | Security settings | Yes | 2FA, sessions management, account deletion |
+| `/settings/sessions` | `Sessions` | Active sessions | Yes | List of active sessions with management |
+| `/settings/2fa` | `TwoFactorSetup` | 2FA configuration | Yes | Setup wizard for 2FA |
+| `/404` | `NotFound` | 404 page | No | Friendly error page with navigation |
+
+#### Authentication Components
+
+| Component | Description | Props | State Management |
+|-----------|-------------|-------|------------------|
+| `LoginForm` | Email/password login form | `onSuccess`, `onError` | Form state, validation errors |
+| `RegisterForm` | User registration form | `onSuccess`, `onError` | Form state, validation errors |
+| `SocialLoginButtons` | Social auth buttons | `onSuccess` | Loading states for each provider |
+| `TwoFactorForm` | 2FA verification form | `tempToken`, `onSuccess` | Code input, validation |
+| `TwoFactorSetupForm` | 2FA setup wizard | - | Setup steps, QR code, verification |
+| `PasswordResetForm` | Password reset form | `token` | Password input, confirmation, strength |
+| `EmailVerificationStatus` | Email verification status | `token` | Verification status, messages |
+| `SessionTable` | Active sessions list | - | Session data, delete confirmation |
+| `ProfileForm` | Profile edit form | `user` | Form state, profile data |
+
+#### Key Frontend API Integration
+
+| Service Function | Endpoint | Purpose | Implementation |
+|------------------|----------|---------|----------------|
+| `loginUser()` | `/api/auth/login` | User login | Handles credentials, stores token in localStorage/context |
+| `registerUser()` | `/api/auth/register` | User registration | Validates and submits registration data |
+| `forgotPassword()` | `/api/auth/forgot-password` | Request password reset | Submits email for reset link |
+| `resetPassword()` | `/api/auth/reset-password` | Reset password | Validates token, submits new password |
+| `verifyEmail()` | `/api/auth/verify-email` | Verify email | Processes email verification token |
+| `logoutUser()` | `/api/auth/logout` | Logout | Clears token, context state, redirects to login |
+| `getUserProfile()` | `/api/user/profile` | Get profile | Fetches and returns user profile data |
+| `updateUserProfile()` | `/api/user/profile` | Update profile | Sends profile updates to server |
+| `setupTwoFactor()` | `/api/auth/2fa/setup` | Setup 2FA | Initiates 2FA setup process |
+| `verifyTwoFactor()` | `/api/auth/2fa/verify` | Verify 2FA | Completes 2FA setup with verification |
+
+#### Authentication State Management
+
+The frontend implements global authentication state management through React Context:
+
+```typescript
+// AuthContext provides:
+{
+  user: User | null;           // Current user object or null if not authenticated
+  token: string | null;        // JWT token for authenticated requests
+  isAuthenticated: boolean;    // Whether user is authenticated
+  isLoading: boolean;          // Loading state during auth operations
+  login: Function;             // Login function
+  logout: Function;            // Logout function
+  setUser: Function;           // Update user state
+  setToken: Function;          // Update token state
+}
+```
+
+This context is consumed throughout the application to:
+- Control access to protected routes
+- Display user-specific UI elements
+- Make authenticated API requests
+
+## Frontend Components
+
+The frontend provides a complete user interface for authentication flows:
+
+### Page Components
+
+- **Home**: Landing page with feature showcase
+- **Login**: User login form with social options and 2FA support
+- **Register**: User registration form with terms acceptance
+- **ForgotPassword**: Password reset request form
+- **ResetPassword**: New password form after reset
+- **VerifyEmail**: Email verification page
+- **Profile**: User profile management
+- **Settings**: Security settings and session management
+- **Dashboard**: User dashboard after login
+- **NotFound**: 404 page
+- **Terms/Privacy/Cookies**: Legal pages
+
+### Auth Components
+
+- **LoginForm**: Email/password login form
+- **RegisterForm**: User registration form
+- **SocialLogin**: Social login buttons
+- **TwoFactorForm**: 2FA verification form
+- **TwoFactorSetup**: 2FA setup wizard
+- **PasswordResetForm**: Password reset form
+- **EmailVerification**: Email verification status
+- **SessionList**: Active sessions management
+
+### Layout Components
+
+- **Navbar**: Navigation with auth-aware states
+- **Footer**: Site footer with legal links
+- **AuthLayout**: Layout for authentication pages
+- **DashboardLayout**: Layout for authenticated pages
+
+## Database Integration
+
+The system supports both MongoDB and PostgreSQL databases with a flexible storage interface:
+
+### Database Models
+
+#### User Model
+- ID (primary key)
+- Email (unique)
+- Username (unique)
+- Password (hashed)
+- First/Last Name
+- Profile Picture
+- Email Verification Status
+- Verification Token
+- Reset Token
+- Two-Factor Authentication Settings
+- Created/Updated Timestamps
+
+#### Social Connection Model
+- User ID (foreign key)
+- Provider (Google, GitHub, etc.)
+- Provider ID
+- Provider-specific Data
+- Created/Updated Timestamps
+
+#### Session Model
+- User ID (foreign key)
+- Token
+- IP Address
+- User Agent
+- Location
+- Timezone
+- Expiration Time
+- Created Timestamp
+
+### Storage Interface
+
+The system uses a consistent storage interface (`IStorage`) that abstracts database operations, making it easy to switch between MongoDB and PostgreSQL:
+
+```typescript
+export interface IStorage {
+  // User operations
+  getUser(id: number): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
+  getUserByResetToken(token: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, data: Partial<InsertUser>): Promise<User>;
+  deleteUser(id: number): Promise<boolean>;
+
+  // Social connection operations
+  getSocialConnection(userId: number, provider: string): Promise<SocialConnection | undefined>;
+  getSocialConnectionByProviderId(provider: string, providerId: string): Promise<SocialConnection | undefined>;
+  createSocialConnection(connection: InsertSocialConnection): Promise<SocialConnection>;
+  deleteSocialConnection(id: number): Promise<boolean>;
+  getUserSocialConnections(userId: number): Promise<SocialConnection[]>;
+
+  // Session operations
+  getSession(id: number): Promise<Session | undefined>;
+  getSessionByToken(token: string): Promise<Session | undefined>;
+  getUserSessions(userId: number): Promise<Session[]>;
+  createSession(session: InsertSession): Promise<Session>;
+  deleteSession(id: number): Promise<boolean>;
+  deleteUserSessions(userId: number): Promise<boolean>;
+}
+```
+
+## Security Features
+
+The authentication system implements multiple layers of security:
+
+### Password Security
+
+Passwords are securely hashed using bcrypt with appropriate salt rounds:
+
+```typescript
+// server/services/password.ts
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 12;
+  return bcrypt.hash(password, saltRounds);
+}
+
+export async function comparePassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
+```
+
+### JWT Implementation
+
+The system uses JWT tokens for secure authentication:
+
+```typescript
+// server/services/tokens.ts
+export function generateToken(
+  payload: TokenPayload,
+  expiresIn: string = process.env.JWT_EXPIRES_IN || '30d'
+): string {
+  return jwt.sign(
+    payload,
+    process.env.JWT_SECRET || 'fallback-secret-do-not-use-in-production',
+    { expiresIn }
+  );
+}
+
+export function verifyToken(token: string): TokenPayload | null {
+  try {
+    return jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret-do-not-use-in-production'
+    ) as TokenPayload;
+  } catch (err) {
+    return null;
+  }
+}
+```
+
+### Two-Factor Authentication
+
+TOTP-based two-factor authentication is implemented using speakeasy:
+
+```typescript
+// From server/routes.ts
+
+// Generate new secret
+const secret = speakeasy.generateSecret({
+  name: `AuthSystem:${user.email}`,
+  length: 20
+});
+
+// Verify the token
+const verified = speakeasy.totp.verify({
+  secret: user.twoFactorSecret,
+  encoding: 'base32',
+  token: req.body.code,
+  window: 1 // Allow 1 time step before and after for clock drift
+});
 ```
 
 ## Customizing Schema & Data Storage
@@ -231,9 +727,9 @@ const storage = await initMongoDB(process.env.MONGODB_URI);
 app.use(registerRoutes(app, storage));
 ```
 
-## Integrating the Auth System into an Existing React Project
+## Integrating into Existing Projects
 
-This section provides a detailed, step-by-step guide for adding this authentication system to any existing React project that doesn't have authentication implemented.
+This authentication system is designed to be easily integrated into existing projects. Here's how to add it to your React application:
 
 ### Frontend Integration
 
