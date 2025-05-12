@@ -50,27 +50,27 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/">
-                  <a className="hover:text-white transition-colors">Home</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Home</span>
                 </Link>
               </li>
               <li>
                 <Link href="/login">
-                  <a className="hover:text-white transition-colors">Login</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Login</span>
                 </Link>
               </li>
               <li>
                 <Link href="/register">
-                  <a className="hover:text-white transition-colors">Register</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Register</span>
                 </Link>
               </li>
               <li>
                 <Link href="/about">
-                  <a className="hover:text-white transition-colors">About</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">About</span>
                 </Link>
               </li>
               <li>
                 <Link href="/contact">
-                  <a className="hover:text-white transition-colors">Contact</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Contact</span>
                 </Link>
               </li>
             </ul>
@@ -81,17 +81,17 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/terms">
-                  <a className="hover:text-white transition-colors">Terms of Service</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span>
                 </Link>
               </li>
               <li>
                 <Link href="/privacy">
-                  <a className="hover:text-white transition-colors">Privacy Policy</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
                 </Link>
               </li>
               <li>
                 <Link href="/cookies">
-                  <a className="hover:text-white transition-colors">Cookie Policy</a>
+                  <span className="hover:text-white transition-colors cursor-pointer">Cookie Policy</span>
                 </Link>
               </li>
             </ul>
@@ -115,13 +115,13 @@ export function Footer() {
             <p>© {currentYear} Auth System. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy">
-                <a className="hover:text-white transition-colors">Privacy Policy</a>
+                <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
               </Link>
               <Link href="/terms">
-                <a className="hover:text-white transition-colors">Terms of Service</a>
+                <span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span>
               </Link>
               <Link href="/cookies">
-                <a className="hover:text-white transition-colors">Cookie Policy</a>
+                <span className="hover:text-white transition-colors cursor-pointer">Cookie Policy</span>
               </Link>
             </div>
           </div>

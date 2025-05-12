@@ -212,131 +212,740 @@ const storage = await initMongoDB(process.env.MONGODB_URI);
 app.use(registerRoutes(app, storage));
 ```
 
-## Integrating the Auth System into an Existing Project
+## Integrating the Auth System into an Existing React Project
+
+This section provides a detailed, step-by-step guide for adding this authentication system to any existing React project that doesn't have authentication implemented.
 
 ### Frontend Integration
 
-1. **Copy Authentication Components**
+#### 1. Install Required Dependencies
+
+First, install the necessary dependencies for the authentication system:
+
+```bash
+# Core authentication dependencies
+npm install jsonwebtoken bcrypt react-hook-form zod @hookform/resolvers
+
+# UI components (if using shadcn/ui)
+npm install @radix-ui/react-dialog @radix-ui/react-label @radix-ui/react-checkbox
+npm install @radix-ui/react-tabs @radix-ui/react-toast
+npm install lucide-react react-icons
+
+# For API requests
+npm install @tanstack/react-query
+```
+
+#### 2. Copy CSS Styles
+
+Copy the authentication-related CSS from `client/src/index.css` to your project's CSS file:
+
+```css
+/* Authentication specific styles */
+.auth-layout {
+  @apply flex flex-col min-h-screen;
+}
+
+.auth-container {
+  @apply flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8;
+}
+
+.auth-form-container {
+  @apply w-full max-w-md mx-auto;
+}
+
+.auth-form {
+  @apply space-y-6;
+}
+
+.auth-header {
+  @apply text-center;
+}
+
+.auth-divider {
+  @apply relative my-6;
+}
+
+.auth-divider::before {
+  @apply absolute inset-0 flex items-center;
+  content: "";
+}
+
+.auth-divider::before {
+  @apply border-t border-gray-200 w-full;
+}
+
+.auth-divider-text {
+  @apply relative flex justify-center text-sm;
+}
+
+.auth-divider-text span {
+  @apply px-2 bg-background text-gray-500;
+}
+
+/* Add any additional authentication-related styles here */
+```
+
+#### 3. Copy Authentication Components
 
 Copy the following directories to your project:
-- `client/src/components/auth` - Authentication UI components
-- `client/src/contexts/AuthContext.tsx` - Auth context provider
-- `client/src/hooks/useAuth.ts` - Auth hook
-- `client/src/lib/auth.ts` - Auth utilities
 
-2. **Set Up Auth Provider**
+```
+client/src/components/auth/        → src/components/auth/
+client/src/contexts/AuthContext.tsx → src/contexts/AuthContext.tsx
+client/src/hooks/useAuth.ts         → src/hooks/useAuth.ts
+client/src/lib/auth.ts              → src/lib/auth.ts
+client/src/lib/queryClient.ts       → src/lib/queryClient.ts
+client/src/lib/utils.ts             → src/lib/utils.ts (if not already present)
+```
 
-Wrap your application with the AuthProvider in your main component:
+#### 4. Copy Authentication Pages
 
-```jsx
-// src/App.jsx or src/main.jsx
+Copy all authentication-related pages to your project:
+
+```
+client/src/pages/login.tsx            → src/pages/login.tsx
+client/src/pages/register.tsx         → src/pages/register.tsx
+client/src/pages/forgot-password.tsx  → src/pages/forgot-password.tsx
+client/src/pages/reset-password.tsx   → src/pages/reset-password.tsx
+client/src/pages/verify-email.tsx     → src/pages/verify-email.tsx
+client/src/pages/profile.tsx          → src/pages/profile.tsx
+client/src/pages/settings.tsx         → src/pages/settings.tsx (optional)
+```
+
+#### 5. Set Up QueryClient
+
+In your main application file (`main.tsx` or `index.tsx`):
+
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/queryClient';
+import App from './App';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </React.StrictMode>,
+);
+```
+
+#### 6. Set Up Auth Provider
+
+Wrap your application with the AuthProvider in your `App.tsx` file:
+
+```tsx
 import { AuthProvider } from './contexts/AuthContext';
+import Router from './Router'; // Your existing router component
 
 function App() {
   return (
     <AuthProvider>
-      {/* Your existing app components */}
+      <Router />
     </AuthProvider>
   );
 }
+
+export default App;
 ```
 
-3. **Add Authentication Routes**
+#### 7. Configure Router with Auth Routes
 
-Add routes for authentication pages:
+Add authentication routes to your router (using React Router or Wouter):
 
-```jsx
-// In your router configuration
+**With React Router:**
+```tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import ForgotPassword from './pages/forgot-password';
 import ResetPassword from './pages/reset-password';
 import VerifyEmail from './pages/verify-email';
+import Profile from './pages/profile';
+import Dashboard from './pages/dashboard';
+import NotFound from './pages/not-found';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
-// Add these routes
-<Route path="/login" element={<Login />} />
-<Route path="/register" element={<Register />} />
-<Route path="/forgot-password" element={<ForgotPassword />} />
-<Route path="/reset-password" element={<ResetPassword />} />
-<Route path="/verify-email" element={<VerifyEmail />} />
+function Router() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        
+        {/* Protected routes */}
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* 404 route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default Router;
 ```
 
-4. **Add Protected Routes**
+**With Wouter:**
+```tsx
+import { Switch, Route } from 'wouter';
+import Home from './pages/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import ForgotPassword from './pages/forgot-password';
+import ResetPassword from './pages/reset-password';
+import VerifyEmail from './pages/verify-email';
+import Profile from './pages/profile';
+import Dashboard from './pages/dashboard';
+import NotFound from './pages/not-found';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
-Create a ProtectedRoute component:
+function Router() {
+  return (
+    <>
+      <Switch>
+        {/* Public routes */}
+        <Route path="/" component={Home} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
+        <Route path="/verify-email" component={VerifyEmail} />
+        
+        {/* Protected routes */}
+        <Route path="/dashboard">
+          {() => (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )}
+        </Route>
+        <Route path="/profile">
+          {() => (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          )}
+        </Route>
+        
+        {/* 404 route */}
+        <Route component={NotFound} />
+      </Switch>
+    </>
+  );
+}
 
-```jsx
-// src/components/ProtectedRoute.jsx
-import { useAuth } from '../hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+export default Router;
+```
 
-export function ProtectedRoute({ children }) {
+#### 8. Create Protected Route Component
+
+```tsx
+// src/components/auth/ProtectedRoute.tsx
+import { ReactNode } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { Navigate } from 'react-router-dom'; // Use appropriate import for your router
+
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
   
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
   
-  return children;
+  return <>{children}</>;
 }
+```
 
-// Usage in your router
-<Route 
-  path="/dashboard" 
-  element={
-    <ProtectedRoute>
-      <Dashboard />
-    </ProtectedRoute>
-  } 
-/>
+#### 9. Update Navigation
+
+Add authentication-related links to your navigation component:
+
+```tsx
+import { useAuth } from '../hooks/useAuth';
+
+function Navbar() {
+  const { isAuthenticated, user, logout } = useAuth();
+  
+  return (
+    <nav>
+      {/* Site logo and other navigation links */}
+      
+      <div className="auth-links">
+        {isAuthenticated ? (
+          <>
+            <a href="/profile">Profile</a>
+            <a href="/dashboard">Dashboard</a>
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+          </>
+        )}
+      </div>
+    </nav>
+  );
+}
+```
+
+#### 10. Update Environmental Variables
+
+Create or update your `.env` file with the necessary authentication variables:
+
+```
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ### Backend Integration
 
-1. **Copy Authentication Server Files**
+#### 1. Install Required Backend Dependencies
 
-Copy these directories to your backend:
-- `server/middleware` - Auth middleware
-- `server/services` - Auth services
-- `shared/schema.ts` - Data schema
-- `shared/types.ts` - Type definitions
+```bash
+npm install express express-session jsonwebtoken bcrypt helmet cors
+npm install drizzle-orm drizzle-zod zod mongodb mongoose
+npm install nodemailer speakeasy qrcode
+```
 
-2. **Integrate Auth Routes**
+#### 2. Copy Authentication Server Files
 
-Add the authentication routes to your Express app:
+Create the necessary directories and copy these files to your backend:
 
-```javascript
-// In your main server file
+```
+server/middleware/   → your-backend/middleware/
+server/services/     → your-backend/services/
+shared/schema.ts     → your-backend/shared/schema.ts
+shared/types.ts      → your-backend/shared/types.ts
+```
+
+#### 3. Set Up Express Server with Authentication
+
+Update your main server file:
+
+```typescript
+// server/index.ts
+import express, { Express, Request, Response, NextFunction } from 'express';
+import session from 'express-session';
+import helmet from 'helmet';
+import cors from 'cors';
 import { registerRoutes } from './routes';
 import { storage } from './storage'; // Your storage implementation
 
-// Register auth routes
-app.use(registerRoutes(app, storage));
+// Initialize Express app
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware setup
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true
+}));
+
+// Session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
+}));
+
+// Register auth and API routes
+registerRoutes(app);
+
+// Error handling middleware
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err.stack);
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({
+    message: err.message || 'Internal Server Error',
+    errors: err.errors
+  });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+export default app;
 ```
 
-3. **Protect Your API Routes**
+#### 4. Create Authentication Routes
 
-Use the authentication middleware to protect your routes:
+Create or update your routes file:
 
-```javascript
-// In your API routes file
+```typescript
+// server/routes.ts
+import { Express, Request, Response } from 'express';
+import { z } from 'zod';
+import * as authService from './services/auth';
+import { authenticateJWT, requireFullAuth } from './middleware/auth';
+import {
+  loginSchema,
+  registerUserSchema,
+  passwordResetRequestSchema,
+  passwordResetSchema,
+  profileUpdateSchema,
+  emailChangeSchema,
+  passwordChangeSchema,
+  twoFactorVerifySchema
+} from './shared/schema';
+
+export function registerRoutes(app: Express) {
+  // Validation middleware
+  const validateRequest = (schema: any) => async (req: Request, res: Response, next: Function) => {
+    try {
+      req.body = schema.parse(req.body);
+      next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({
+          message: 'Validation failed',
+          errors: error.format()
+        });
+      } else {
+        next(error);
+      }
+    }
+  };
+
+  // Authentication routes
+  app.post('/api/auth/register', validateRequest(registerUserSchema), async (req, res, next) => {
+    try {
+      const result = await authService.registerUser(req.body);
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/auth/login', validateRequest(loginSchema), async (req, res, next) => {
+    try {
+      const ipInfo = {
+        ip: req.ip,
+        userAgent: req.headers['user-agent']
+      };
+      const result = await authService.loginUser(req.body, ipInfo);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/auth/logout', authenticateJWT, async (req, res, next) => {
+    try {
+      await authService.logoutUser(req.token!);
+      res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/api/auth/verify-email', async (req, res, next) => {
+    try {
+      const token = req.query.token as string;
+      const result = await authService.verifyEmail(token);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/auth/forgot-password', validateRequest(passwordResetRequestSchema), async (req, res, next) => {
+    try {
+      await authService.requestPasswordReset(req.body);
+      res.json({ message: 'Password reset instructions sent' });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/auth/reset-password', validateRequest(passwordResetSchema), async (req, res, next) => {
+    try {
+      const result = await authService.resetPassword(req.body);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // User profile routes (protected)
+  app.get('/api/user/profile', authenticateJWT, async (req, res, next) => {
+    try {
+      const profile = await authService.getUserProfile(req.user!.id);
+      res.json(profile);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put('/api/user/profile', authenticateJWT, validateRequest(profileUpdateSchema), async (req, res, next) => {
+    try {
+      const updatedProfile = await authService.updateUserProfile(req.user!.id, req.body);
+      res.json(updatedProfile);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Add other authentication routes (2FA, social login, etc.)
+  
+  return app;
+}
+```
+
+#### 5. Implement Storage Interface
+
+Choose between memory storage (for development) or a database implementation:
+
+**For MongoDB Storage:**
+
+```typescript
+// server/storage-mongodb.ts
+import mongoose from 'mongoose';
+import { IStorage } from './storage';
+import User from './models/User';
+import SocialConnection from './models/SocialConnection';
+import Session from './models/Session';
+
+export class MongoDBStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const user = await User.findById(id);
+    return user ? user.toObject() : undefined;
+  }
+  
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const user = await User.findOne({ email });
+    return user ? user.toObject() : undefined;
+  }
+  
+  // Implement all other methods from IStorage interface...
+}
+
+// Initialize MongoDB connection
+export async function initMongoDB(uri: string): Promise<MongoDBStorage> {
+  await mongoose.connect(uri);
+  console.log('Connected to MongoDB');
+  return new MongoDBStorage();
+}
+```
+
+#### 6. Create MongoDB Models
+
+Create the Mongoose models for your database:
+
+```typescript
+// server/models/User.js
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const UserSchema = new Schema({
+  email: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
+  password: { type: String },
+  firstName: { type: String },
+  lastName: { type: String },
+  isVerified: { type: Boolean, default: false },
+  verificationToken: { type: String },
+  verificationExpires: { type: Date },
+  resetToken: { type: String },
+  resetExpires: { type: Date },
+  twoFactorEnabled: { type: Boolean, default: false },
+  twoFactorSecret: { type: String },
+  profilePicture: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('User', UserSchema);
+```
+
+```typescript
+// server/models/SocialConnection.js
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const SocialConnectionSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  provider: { type: String, required: true }, // 'google', 'github', etc.
+  providerId: { type: String, required: true },
+  data: { type: Schema.Types.Mixed },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Create compound index for userId and provider
+SocialConnectionSchema.index({ userId: 1, provider: 1 }, { unique: true });
+
+module.exports = mongoose.model('SocialConnection', SocialConnectionSchema);
+```
+
+```typescript
+// server/models/Session.js
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const SessionSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  token: { type: String, required: true, unique: true },
+  ipAddress: { type: String },
+  userAgent: { type: String },
+  location: { type: String },
+  timezone: { type: String },
+  expiresAt: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Session', SessionSchema);
+```
+
+#### 7. Set Up Environment Variables
+
+Create a `.env` file in your backend root:
+
+```
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+
+# JWT Settings
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_EXPIRES_IN=30d
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/your_database_name
+
+# Email Service (SMTP2GO)
+SMTP_HOST=mail.smtp2go.com
+SMTP_PORT=2525
+SMTP_SECURE=false
+SMTP_USER=your-smtp2go-username
+SMTP_PASS=your-smtp2go-password
+EMAIL_FROM_NAME=Authentication System
+EMAIL_FROM_ADDRESS=noreply@yourdomain.com
+
+# Application URL (for email links)
+APP_URL=http://localhost:5000
+
+# Session
+SESSION_SECRET=your-session-secret-key
+```
+
+#### 8. Connect Authentication to Your Existing API
+
+If you already have an API, integrate the authentication middleware:
+
+```typescript
+// Existing API route file
 import { authenticateJWT, requireFullAuth } from './middleware/auth';
 
-// Route that requires authentication
-router.get('/api/protected-resource', authenticateJWT, (req, res) => {
-  // Access authenticated user via req.user
-  res.json({ message: 'Protected data', user: req.user });
+// Public route - no authentication needed
+app.get('/api/public-data', (req, res) => {
+  res.json({ message: 'This data is public' });
 });
 
-// Route that requires full authentication (including 2FA if enabled)
-router.post('/api/very-sensitive-action', requireFullAuth, (req, res) => {
-  // Handle sensitive action
+// Protected route - requires authentication
+app.get('/api/protected-data', authenticateJWT, (req, res) => {
+  // Access authenticated user via req.user
+  res.json({ 
+    message: 'This data is protected',
+    userId: req.user.id
+  });
+});
+
+// Highly sensitive route - requires full authentication (including 2FA if enabled)
+app.post('/api/sensitive-action', requireFullAuth, (req, res) => {
+  res.json({ message: 'Sensitive action completed' });
 });
 ```
+
+### Testing the Integration
+
+1. Start your backend server:
+   ```bash
+   npm run server
+   ```
+
+2. Start your frontend development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Test the authentication flow:
+   - Navigate to `/register` to create a new account
+   - Verify your email (check the email or console logs in development)
+   - Login with your credentials
+   - Test protected routes
+   - Test password reset functionality
+
+### Troubleshooting Common Integration Issues
+
+1. **Cross-Origin Resource Sharing (CORS) Issues**:
+   - Ensure your backend CORS settings allow requests from your frontend origin
+   - Check that credentials are included in CORS configuration
+
+2. **Session/Cookie Issues**:
+   - Verify that cookies are being set properly
+   - Check that session middleware is configured correctly
+
+3. **Authentication Token Problems**:
+   - Ensure JWT_SECRET is properly set in environment variables
+   - Verify token expiration times are appropriate
+
+4. **Database Connection Issues**:
+   - Check database connection string
+   - Verify database models match schema definitions
+
+5. **Email Sending Problems**:
+   - Verify SMTP settings
+   - Test email service with a simple test email
+
+6. **Missing Dependencies**:
+   - Install any missed dependencies
+   - Check for version compatibility issues
 
 ## Environment Variables
 
