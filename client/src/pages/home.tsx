@@ -32,11 +32,6 @@ export default function Home() {
                     </Link>
                   ) : (
                     <>
-                      <Link href="/register">
-                        <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg">
-                          Get Started
-                        </Button>
-                      </Link>
                       <Link href="/login">
                         <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700 hover:border-blue-700">
                           Sign In
@@ -194,11 +189,6 @@ export default function Home() {
                 </Link>
               ) : (
                 <>
-                  <Link href="/register">
-                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg">
-                      Create Account
-                    </Button>
-                  </Link>
                   <Link href="/login">
                     <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700 hover:border-blue-700">
                       Sign In

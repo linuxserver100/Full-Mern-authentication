@@ -114,11 +114,6 @@ export function Navbar() {
                     Log in
                   </a>
                 </Link>
-                <Link href="/register">
-                  <a>
-                    <Button>Sign up</Button>
-                  </a>
-                </Link>
               </div>
             )}
             
@@ -181,11 +176,6 @@ export function Navbar() {
                       <Link href="/login">
                         <a className="text-lg font-semibold" onClick={closeMenu}>
                           Log in
-                        </a>
-                      </Link>
-                      <Link href="/register">
-                        <a onClick={closeMenu}>
-                          <Button className="w-full">Sign up</Button>
                         </a>
                       </Link>
                     </>
