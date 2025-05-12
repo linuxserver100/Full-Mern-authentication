@@ -7,6 +7,12 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/auth_s
 
 // Connect to MongoDB
 export const connectToMongoDB = async (): Promise<typeof mongoose> => {
+  // Only attempt to connect if USE_MONGODB is set to true
+  if (process.env.USE_MONGODB !== 'true') {
+    console.log('MongoDB connection skipped - using PostgreSQL instead');
+    return mongoose;
+  }
+  
   try {
     const options = {
       useNewUrlParser: true,
@@ -18,7 +24,8 @@ export const connectToMongoDB = async (): Promise<typeof mongoose> => {
     return connection;
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1);
+    console.log('Continuing with PostgreSQL as fallback');
+    return mongoose;
   }
 };
 

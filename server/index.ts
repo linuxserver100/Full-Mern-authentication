@@ -38,14 +38,17 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Connect to MongoDB
-  try {
-    await connectToMongoDB();
-    console.log('Connected to MongoDB successfully');
-  } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-    // Continue with the app startup even if MongoDB connection fails
-    // The app will use the fallback PostgreSQL database
+  // Connect to MongoDB if USE_MONGODB is true
+  if (process.env.USE_MONGODB === 'true') {
+    try {
+      await connectToMongoDB();
+      console.log('Connected to MongoDB successfully');
+    } catch (error) {
+      console.error('Failed to connect to MongoDB:', error);
+      console.log('Continuing with PostgreSQL database');
+    }
+  } else {
+    console.log('Using PostgreSQL database as configured in .env');
   }
 
   const server = await registerRoutes(app);
